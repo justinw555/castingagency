@@ -4,9 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 database_name = "castingagency"
-database_path = "postgresql://{}/{}".format('postgres:secret@localhost:5432', database_name)
+#database_path = "postgresql://{}/{}".format('postgres:secret@localhost:5432', database_name)
 # for Heroku
-#database_path = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
+database_path = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
 db = SQLAlchemy()
 
 '''
