@@ -26,8 +26,6 @@ class CastingAgencyTestCase(unittest.TestCase):
             self.db.create_all()
         db_drop_and_create_all()
         self.userToken = os.environ.get("userToken") 
-        #self.userToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikp1OXZmY1BuZ2s4SHh2VnFVZWp3TiJ9.eyJpc3MiOiJodHRwczovL2Rldi1vMWZpOGxwMS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjE0MmM5MjM4MWZlNzQwMDY5MTNiNGMxIiwiYXVkIjoiY2FzdGluZ2FnZW5jeTMiLCJpYXQiOjE2MzYyNjAyNDcsImV4cCI6MTYzNjM0NjY0NywiYXpwIjoidjBhNGE3MVo5WE5kRkNwbTZGMTY1cHFyZXJiczgzYTEiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.I2ClGLXaNiXjrFBGRMVKXIAwu-f2QvVFzK_p6jeThm4QyxDKSh4rjDUnsmJB1TtUwYNtg1ACI3nJlQnrw5WA6TWnTzRENNa9C7iul8tUWZ2_FU-CEw2HAgPUH2BCty8n_KknxHCi0EHeQ66kzyUhzrkMygkpPdhCgforX891d5YTxbAfkcd8uZT9oDsljAGATzxs1XsdvGpaPiC-NRJF2KoGX8-_di7x-X2vs3FtpHyTEOmmtP5SlWC656QIMLY77LWLvqxzE2ncyHy8ZRLHwh2pcwIgNWhmA21zRdIFJSOTBaI1z0fSzZAB3oEEcUfkDyCO2k5_IZ_qG03XFkKiSg"
-        # print("setup started")
         
         pass
     def tearDown(self):
@@ -84,16 +82,11 @@ class CastingAgencyTestCase(unittest.TestCase):
     #positive test case that DELETE actors works as expected
     def test_delete_actors(self):
         print("test_delete_actors started")
-        actor = Actor.query.filter(Actor.id == 2).one_or_none() #returns if the actor #2 exists or doesn't exist
-        print(actor)
         response = self.client().delete('/actors/2', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
 
         actor = Actor.query.filter(Actor.id == 2).one_or_none() #returns if the actor #2 exists or doesn't exist
-        print(actor)
-        print(response.status_code)
-        print(data['success'])
-        print(data['deleted'])
+        
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], 2)

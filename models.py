@@ -67,7 +67,6 @@ class Movie(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(), nullable = False)
   releasedate = db.Column(db.Date, nullable=False) 
-  #actor_id = db.Column(db.Integer, db.ForeignKey('actors.id'), nullable=False)
 
 
 
@@ -79,5 +78,5 @@ class Actor(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(), nullable = False)
   age = db.Column(db.Integer, nullable = False)
-  gender = db.Column(db.String(), nullable=False) #db.CheckConstraint('gender == "male"' or 'gender == "female"', nullable = False))
-  #movie_with_actors = db.relationship('Movie',backref = 'some_actor',lazy='joined')
+  gender = db.Column(db.String(), nullable=False) 
+  
