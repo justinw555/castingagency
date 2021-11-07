@@ -9,8 +9,8 @@ from sqlalchemy.sql import func
 from models import setup_db, Movie, Actor, db
 from auth import AuthError, requires_auth
 
-#loginURL = os.environ.get('loginURL')
-loginURL = 'https://dev-o1fi8lp1.us.auth0.com/authorize?audience=castingagency3&response_type=token&client_id=v0a4a71Z9XNdFCpm6F165pqrerbs83a1&redirect_uri=http://0.0.0.0:8080/landing'
+loginURL = os.environ.get('loginURL')
+#loginURL = 'https://dev-o1fi8lp1.us.auth0.com/authorize?audience=castingagency3&response_type=token&client_id=v0a4a71Z9XNdFCpm6F165pqrerbs83a1&redirect_uri=http://0.0.0.0:8080/landing'
 
 def create_app(test_config=None):
   # create and configure the app
