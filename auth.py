@@ -1,15 +1,15 @@
 import json
+import os
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+ALGORITHMS = os.environ.get('ALGORITHMS')
+API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
-AUTH0_DOMAIN = 'dev-o1fi8lp1.us.auth0.com'   #updated this to reflect my auth0 domain
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'castingagency3'
-
-## AuthError Exception
+# AuthError Exception
 '''
 AuthError Exception
 A standardized way to communicate auth failure modes
@@ -19,8 +19,7 @@ class AuthError(Exception):
         self.error = error
         self.status_code = status_code
 
-
-## Auth Header
+# Auth Header
 
 def get_token_auth_header():
     auth_header = request.headers.get('Authorization', None)
@@ -55,13 +54,9 @@ def get_token_auth_header():
     token = parts[1]
     return token
 
-
 def verify_decode_jwt(token):   #the input is a JWT token
-    
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')  #collects the public key from Auth0
-    
     jwks = json.loads(jsonurl.read())                                   #gives us the key/s in a readable dict format, including 'kid'
-    
     unverified_header = jwt.get_unverified_header(token)                #Uses jwt's get_unverified_header to get the header from the token
     
     if 'kid' not in unverified_header:  #double-checks that the JWT header actually contains a key ID for us to verify
@@ -93,16 +88,13 @@ def verify_decode_jwt(token):   #the input is a JWT token
             )
             
             return payload
-
         except jwt.ExpiredSignatureError:
-           
             raise AuthError({
                 'code': 'token_expired',
                 'description': 'Token expired.'
             }, 401)
 
         except jwt.JWTClaimsError:
-            
             raise AuthError({
                 'code': 'invalid_claims',
                 'description': 'Incorrect claims. Please, check the audience and issuer.'
@@ -118,9 +110,7 @@ def verify_decode_jwt(token):   #the input is a JWT token
             'description': 'Unable to find the appropriate key.'
         }, 400)
 
-
 def check_permissions(permission, payload):
-    
     if 'permissions' not in payload:
         raise AuthError({
             'code': 'unavailable_permission',
@@ -131,7 +121,6 @@ def check_permissions(permission, payload):
             'code': 'invalid_permission',
             'description': 'Permission was invalid.'
         }, 403)
-    
     return True
 
 
@@ -140,16 +129,12 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-
             try:
                 payload = verify_decode_jwt(token)
             except Exception as e:
                 print(e)
-                
                 abort(401)
-
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
-
         return wrapper
     return requires_auth_decorator

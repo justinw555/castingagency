@@ -8,7 +8,6 @@ from models import setup_db, Movie, Actor, db_drop_and_create_all
 
 class CastingAgencyTestCase(unittest.TestCase):
     """This class represents the casting agency test case"""
-
     def setUp(self):
         # """Define test variables and initialize app."""
         self.app = create_app()
@@ -16,8 +15,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         self.database_name = "castingagency_test"
         self.database_path = "postgresql://{}/{}".format('postgres:secret@localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
-        
-
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -26,20 +23,12 @@ class CastingAgencyTestCase(unittest.TestCase):
             self.db.create_all()
         db_drop_and_create_all()
         self.userToken = os.environ.get("userToken") 
-        
         pass
     def tearDown(self):
         """Executed after each test"""
         print("teardown completed")
         pass
     
-    """
-    TODO
-    Tests will include at least….
-        One test for success behavior of each endpoint
-        One test for error behavior of each endpoint
-        At least two tests of RBAC for each role
-    """
     #positive test case that GET actors works as expected
     def test_get_actors(self):
         response = self.client().get('/actors', headers={"Authorization": f"Bearer {self.userToken}"})
@@ -54,7 +43,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_requesting particular actor started")
         response = self.client().get('/actors/1', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 405)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method not allowed')
@@ -64,7 +52,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_get_movies started")
         response = self.client().get('/movies', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(bool(data['movies']), True)  #Asserts that 'movies' contains some data
@@ -74,7 +61,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_requesting particular movie started")
         response = self.client().get('/movies/1', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 405)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method not allowed')
@@ -84,9 +70,7 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_delete_actors started")
         response = self.client().delete('/actors/2', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         actor = Actor.query.filter(Actor.id == 2).one_or_none() #returns if the actor #2 exists or doesn't exist
-        
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], 2)
@@ -97,7 +81,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_delete nonexistent_actors started")
         response = self.client().delete('/actors/5000', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
@@ -107,7 +90,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_delete movies started")
         response = self.client().delete('/movies/2', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         movie = Movie.query.filter(Movie.id == 2).one_or_none() #returns if the movie #2 exists or doesn't exist
         print(movie)
         self.assertEqual(response.status_code, 200)
@@ -120,7 +102,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         print("test_delete nonexistent movie started")
         response = self.client().delete('/movies/5000', headers={"Authorization": f"Bearer {self.userToken}"})
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
@@ -133,10 +114,8 @@ class CastingAgencyTestCase(unittest.TestCase):
             'age': '33',
             'gender': 'Male'
         }
-
         response = self.client().post('/actors', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.new_actor)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(bool(data['created']), True)
@@ -151,7 +130,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         }
         response = self.client().post('/actors/1', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.new_actor)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 405)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method not allowed')
@@ -164,10 +142,8 @@ class CastingAgencyTestCase(unittest.TestCase):
             'age': '',
             'gender': ''
         }
-
         response = self.client().post('/actors', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.blank_actor)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
@@ -179,10 +155,8 @@ class CastingAgencyTestCase(unittest.TestCase):
             'title': 'Dune',
             'releasedate': '2022-01-31'
         }
-
         response = self.client().post('/movies', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.new_movie)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(bool(data['created']), True)
@@ -196,7 +170,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         }
         response = self.client().post('/movies/1', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.new_movie)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 405)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method not allowed')
@@ -208,10 +181,8 @@ class CastingAgencyTestCase(unittest.TestCase):
             'title': '',
             'releasedate': ''
         }
-
         response = self.client().post('/movies', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.blank_movie)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
@@ -226,7 +197,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         }
         response = self.client().patch('/actors/3', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.updated_actors)
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['updated'], 3)
@@ -239,10 +209,7 @@ class CastingAgencyTestCase(unittest.TestCase):
             'releasedate': '2022-03-30'
         }
         response = self.client().patch('/movies/3', headers={"Authorization": f"Bearer {self.userToken}"}, json=self.updated_movie)
-        #data = json.loads(response.data.decode('utf-8'))
-        
         data = json.loads(response.data)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['updated'], 3)
@@ -251,5 +218,4 @@ class CastingAgencyTestCase(unittest.TestCase):
 if __name__ == "__main__":
     print("executing tests")
     """Define test variables and initialize app."""
-    
     unittest.main()

@@ -71,32 +71,127 @@ This endpoint generates the bearer token, which you will need to access various 
 
     GET/actors
 Retrieves list of actors, including id, name, age, and gender.
+Request arguments: userToken with correct permissions
+Returns: JSON object containing {'success': True, 'actors': []}
 This resource requires the role of Casting Assistant, Casting Director, or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/actors -H "Authorization: Bearer ${userToken}"
+Sample response: 
+{
+    "actors": [
+        {
+            "id": 1,
+            "name": "Actor 1",
+            "age": 31,
+            "gender": "Male"
+        }
+    ],
+    "success": true
+}
 
     GET/movies
 Retrieves list of movies, including id, movie title and release date.
+Request arguments: userToken with correct permissions
+Returns: JSON object containing {'success': True, 'movies': []}
 This resource requires the role of Casting Assistant, Casting Director, or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/movies -H "Authorization: Bearer ${userToken}"
+Sample response: 
+{
+    "movies": [
+        {
+            "id": 1,
+            "title": "Movie 1",
+            "releasedate": "2022-01-31"
+        }
+    ],
+    "success": true
+}
 
     POST/actors
 Adds a new actor. Requires name, age, and gender to be filled out.
+Request arguments: userToken with correct permissions, JSON object with all values filled out for name, age, and gender.
+Returns: JSON object containing {'success': True, 'created': actor.id}
 This resource requires the role of Casting Director or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/actors -X POST -H "Authorization: Bearer ${userToken}" 
+-d '{
+        "name": "Actor 1",
+        "age": 31,
+        "gender": "Male"
+}'
+Sample response: 
+{
+    "success": true,
+    "created": 1
+}
 
     POST/movies
 Adds a new movie. Requires title and release date (YYYY-MM-DD) to be filled out.
+Request arguments: userToken with correct permissions, JSON object with all values filled out for title and release date (YYYY-MM-DD).
+Returns: JSON object containing {'success': True, 'created': movie.id}
 This resource requires the role of Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/movies -X POST -H "Authorization: Bearer ${userToken}" 
+-d '{
+        "title": "Movie 1",
+        "releasedate": "2022-01-31"
+}'
+Sample response: 
+{
+    "success": true,
+    "created": 1
+}
 
     DELETE/actors/<int:actor_id>
-Deletes an existing actor. 
+Deletes an existing actor by id. 
+Request arguments: userToken with correct permissions.
+Returns: JSON object containing {'success': True, 'deleted': actor_id}
 This resource requires the role of Casting Director or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/actors/1 -X DELETE -H "Authorization: Bearer ${userToken}"
+Sample response: 
+{
+    "success": true,
+    "deleted": 1
+}
 
     DELETE/movies/<int:movie_id>
-Deletes an existing movie. 
+Deletes an existing movie by id. 
+Request arguments: userToken with correct permissions.
+Returns: JSON object containing {'success': True, 'deleted': movie_id}
 This resource requires the role of Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/movies/1 -X DELETE -H "Authorization: Bearer ${userToken}"
+Sample response: 
+{
+    "success": true,
+    "deleted": 1
+}
 
     PATCH/actors/<int:actor_id>
-Edits an existing actor. Requires name, age, and gender to be filled out.
+Edits an existing actor by id. Requires name, age, and gender to be filled out.
+Request arguments: userToken with correct permissions, JSON object with all values filled out for name, age, and gender.
+Returns: JSON object containing {'success': True, 'updated': actor.id}
 This resource requires the role of Casting Director or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/actors/1 -X PATCH -H "Authorization: Bearer ${userToken}" 
+-d '{
+        "name": "Actor 1",
+        "age": 51,
+        "gender": "Male"
+}'
+Sample response: 
+{
+    "success": true,
+    "updated": 1
+}
 
     PATCH/movies/<int:movie_id>
-Edits an existing movie. Requires title and release date (YYYY-MM-DD) to be filled out.
+Edits an existing movie by id. Requires title and release date (YYYY-MM-DD) to be filled out.
+Request arguments: userToken with correct permissions, JSON object with all values filled out for title and release date (YYYY-MM-DD).
+Returns: JSON object containing {'success': True, 'updated': movie.id}
 This resource requires the role of Casting Director or Executive Producer.
+Sample curl request: curl http://0.0.0.0:8080/movies/1 -X PATCH -H "Authorization: Bearer ${userToken}" 
+-d '{
+        "title": "Movie 1",
+        "releasedate": "2022-06-30"
+}'
+Sample response: 
+{
+    "success": true,
+    "updated": 1
+}
